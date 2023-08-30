@@ -1,0 +1,20 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    /* adjust width as needed */
+    width: 100px;
+    height: auto;
+}
