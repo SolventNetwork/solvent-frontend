@@ -1,58 +1,55 @@
 document.addEventListener("DOMContentLoaded", function() {
+    let activeCursor = null;
 
-    const setupAnimatedLink = function(objId, textToType, delay) {
-        const obj = document.getElementById(objId);
-        obj.addEventListener("load", function() {
+    const typeText = (objId, textToType, intervalTime) => {
+        return new Promise(resolve => {
+            const obj = document.getElementById(objId);
             const svgDoc = obj.contentDocument;
-            const container = svgDoc.documentElement;
             const typedText = svgDoc.getElementById("typedText");
             const cursor = svgDoc.getElementById("cursor");
-    
+
             let currentText = "";
             let typeIndex = 0;
-            let typing;
-            let typingFinished = false; // Track if typing is finished
-    
-            const startTyping = function() {
-                typedText.setAttribute('visibility', 'visible');
-                cursor.setAttribute('visibility', 'visible');
-                
-                typing = setInterval(function() {
-                    if(typeIndex < textToType.length) {
-                        currentText += textToType[typeIndex];
-                        typedText.textContent = currentText;
-                        cursor.setAttribute('x', 100 + typedText.getComputedTextLength());
-                        typeIndex++;
-                    } else {
-                        clearInterval(typing);
-                        typingFinished = true; // Set typing finished to true
-                    }
-                }, 100);
-            };
-    
-            container.addEventListener('mouseover', startTyping);
-            container.addEventListener('mouseout', function() {
-                if (!typingFinished) { // Clear only if typing is not finished
-                    typedText.setAttribute('visibility', 'hidden');
-                    cursor.setAttribute('visibility', 'hidden');
+
+            activeCursor?.setAttribute('visibility', 'hidden');
+            activeCursor = cursor;
+            cursor.setAttribute('visibility', 'visible');
+            
+            const typing = setInterval(() => {
+                if (typeIndex < textToType.length) {
+                    currentText += textToType[typeIndex];
+                    typedText.textContent = currentText;
+                    cursor.setAttribute('x', 100 + typedText.getComputedTextLength());
+                    typeIndex++;
+                } else {
                     clearInterval(typing);
-                    currentText = "";
-                    typedText.textContent = "";
-                    typeIndex = 0;
+                    cursor.setAttribute('visibility', 'hidden');
+                    resolve();
                 }
-            });
-    
-            setTimeout(startTyping, delay);
+            }, intervalTime);
         });
     };
-    
+
+    const setupAnimatedLink = (objId, textToType, delay, specialFunc = null) => {
+        setTimeout(async () => {
+            const obj = document.getElementById(objId);
+            const svgDoc = obj.contentDocument;
+            const typedText = svgDoc.getElementById("typedText");
+            typedText.setAttribute('visibility', 'visible');
+
+            // Execute the special function if provided
+            specialFunc?.(svgDoc);
+
+            const intervalTime = 1500 / textToType.length;
+            await typeText(objId, textToType, intervalTime);
+        }, delay);
+    };
 
     const updateWhitepaperLink = function(svgDoc, latestVersion) {
         const whitepaperLink = svgDoc.querySelector('a');
         whitepaperLink.setAttribute('href', `../whitepaper/${latestVersion}.html`);
     };
 
-    // Fetch the latest whitepaper version and store it
     let latestVersion;
     fetch('latest-version.json')
     .then(response => response.json())
@@ -61,61 +58,31 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .catch(error => console.error("Could not fetch latest whitepaper version:", error));
 
-    // Set up the Discord link
-    setupAnimatedLink('discord-logo', "Join our Discord server", 1000);
+    // Delays
+    let delayDiscord = 1000;
+    let delayMail = delayDiscord + 1500;
+    let delayGithub = delayMail + 1500;
+    let delayX = delayGithub + 1500;
+    let delayWhitepaper = delayX + 1500;
 
-    // Set up the whitepaper link
+    // Setup links
+    setupAnimatedLink('discord-logo', "Join our Discord server", delayDiscord);
+    setupAnimatedLink('mail-logo', "Send us an email", delayMail);
+    setupAnimatedLink('github-logo', "Read our code", delayGithub);
+    setupAnimatedLink('x-logo', "Follow us on 𝕏", delayX);
+
     const whitepaperObject = document.getElementById('whitepaper-logo');
     whitepaperObject.addEventListener('load', function() {
         const svgDoc = whitepaperObject.contentDocument;
 
-        // Update the whitepaper link if latestVersion is available
         if (latestVersion) {
             updateWhitepaperLink(svgDoc, latestVersion);
         }
 
-        // Continue with the animation setup
-        // Here we move the logic inside the existing load event for whitepaper
-        const textToType = "Read our whitepaper";
-        const delay = 4000;
-        const container = svgDoc.documentElement;
-        const typedText = svgDoc.getElementById("typedText");
-        const cursor = svgDoc.getElementById("cursor");
-
-        let currentText = "";
-        let typeIndex = 0;
-        let typing;
-        let typingFinished = false;
-
-        const startTyping = function() {
-            typedText.setAttribute('visibility', 'visible');
-            cursor.setAttribute('visibility', 'visible');
-            
-            typing = setInterval(function() {
-                if (typeIndex < textToType.length) {
-                    currentText += textToType[typeIndex];
-                    typedText.textContent = currentText;
-                    cursor.setAttribute('x', 100 + typedText.getComputedTextLength());
-                    typeIndex++;
-                } else {
-                    clearInterval(typing);
-                    typingFinished = true;
-                }
-            }, 100);
-        };
-
-        container.addEventListener('mouseover', startTyping);
-        container.addEventListener('mouseout', function() {
-            if (!typingFinished) {
-                typedText.setAttribute('visibility', 'hidden');
-                cursor.setAttribute('visibility', 'hidden');
-                clearInterval(typing);
-                currentText = "";
-                typedText.textContent = "";
-                typeIndex = 0;
-            }
-        });
-
-        setTimeout(startTyping, delay);
+        setupAnimatedLink(
+            'whitepaper-logo',
+            'Read our whitepaper',
+            delayWhitepaper
+        );
     });
 });

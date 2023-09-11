@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
+    <a href="mailto:garrett@solvent.network?subject=I want to help!">
+        <!-- Envelope Unicode -->
+        <text x="20" y="70" fill="#4AF626" style="font-family: Arial; font-size: 100px;">&#9993;</text>
+        
+        <!-- Animated Text -->
+        <text id="typedText" x="100" y="50" fill="#4AF626" style="font-family:monospace;font-size:16px;"></text>
+        <rect id="cursor" x="100" y="30" width="8" height="20" fill="#4AF626" visibility="hidden"></rect>
+    </a>
+</svg>
