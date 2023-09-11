@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting to the latest Whitepaper</title>
+    <style>
+        body {
+            background-color: black;
+            color: #4AF626;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 2em;
+        }
+    </style>
+    <script>
+        // Fetch the latest version from the JSON file
+        fetch('./latest-version.json')
+            .then(response => response.json())
+            .then(data => {
+                const currentVersion = data.currentVersion;
+                // Redirect to the latest version
+                window.location.href = `./whitepaper/${currentVersion}.html`;
+            });
+    </script>
+</head>
+<body>
+    Redirecting to the latest version of the Whitepaper...
+</body>
+</html>

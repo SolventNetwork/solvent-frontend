@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Garrett M. Petersen" />
+  <title>Solvent Lending: DeFi Lending Without the Possibility of Insolvent Debt</title>
+  <style>
+    html {
+      color: #4AF626;
+      background-color: #000;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #4AF626; /* Green text */
+    }
+    a:visited {
+      color: #4AF626; /* Green text for visited links */
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h4 .header-section-number {
+      display: none;
+    }
+    .inline-heading-paragraph {
+      margin-top: 20px;
+    }
+    .inline-heading-paragraph h4 {
+      display: inline;
+      margin-right: 20px;
+    }
+    .inline-heading-paragraph p {
+      display: inline;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    div.abstract {
+      margin: 2em 2em 2em 2em;
+      text-align: left;
+      font-size: 85%;
+    }
+    div.abstract-title {
+      font-weight: bold;
+      text-align: center;
+      padding: 0;
+      margin-bottom: 0.5em;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    #update-banner {
+        background-color: #4AF626;  /* Green background */
+        color: black;  /* Black text */
+        text-align: center;  /* Centered text */
+        padding: 10px;  /* Padding for a bit of space */
+        font-size: 18px;  /* Font size */
+        position: fixed;  /* Fixed position */
+        width: 100%;  /* Full width */
+        top: 0;  /* At the top of the page */
+        left: 0;  /* Align to the left edge of the viewport */
+        right: 0;  /* Align to the right edge of the viewport */
+        z-index: 1000;  /* Ensure it's above other elements */
+    }
+    #update-banner a, #update-banner a:visited {
+      color: black;
+    }
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div id="update-banner" style="display: none;">
+    A newer version is available. <a id="new-version-link" href="#">Click here to read it</a>
+</div>
+    
+<header id="title-block-header">
+<h1 class="title">Solvent Lending: DeFi Lending Without the Possibility
+of Insolvent Debt</h1>
+<p class="author">Garrett M. Petersen</p>
+<div class="abstract">
+<div class="abstract-title">Abstract</div>
+<p>Existing decentralized finance (DeFi) lending protocols grapple with
+vulnerabilities, especially during rapid market shifts that can render
+loans insolvent before they can be liquidated. The Solvent Lending protocol
+addresses this by using Interest Accruing Stop Loss Orders (IASLOs), a
+new type of hook on top of Uniswap v4 liquidity pools. This mechanism
+ensures that liquidations always happen when they are supposed to, even
+during significant market fluctuations. This whitepaper presents the
+Solvent Lending protocol’s design and compares its robustness to existing DeFi
+lending systems, highlighting its potential to enhance stability and
+decentralization in DeFi.</p>
+</div>
+<p>Whitepaper version: 1.0.0</p>
+</header>
+<p>In the evolving DeFi ecosystem, decentralized finance has faced
+notable vulnerabilities. One important issue is loans becoming insolvent
+before liquidators can intervene, especially during sudden market
+shifts. This not only places lending protocols at risk but also
+diminishes trust in DeFi platforms. The Solvent Lending protocol proposes a
+novel solution. This paper introduces a new DeFi primitive, the Interest
+Accruing Stop Loss Order (IASLO), to be integrated with Uniswap v4
+liquidity pools as a set of hooks. Using these IASLOs, Solvent Lending ensures timely liquidations regardless of market conditions.
+This whitepaper details the design of the Solvent Lending protocol, contrasting
+its strengths against existing DeFi lending methods, and underscores its
+potential to bolster stability, security, and decentralization in
+DeFi.</p>
+<h1 data-number="1" id="background"><span
+class="header-section-number">1</span> Background</h1>
+<p>DeFi lending protocols allow users to collateralize ERC-20 tokens,
+leveraging them to borrow other tokens. At the heart of these systems is
+a mechanism to manage the risk of volatile asset values. When collateral
+asset values plummet, loans risk insolvency, leading to losses for the
+protocol or its users.</p>
+<p>Traditionally, these lending protocols have incorporated liquidators,
+third-party participants who repay loans when the ratio between the
+value of their borrowed tokens and their collateral falls such that they
+become liquidatable. The liquidators receive a liquidation bonus, thus
+taking over the collateral at a profit. The caveat here is that rapid
+market shifts can outpace these liquidators, resulting in insolvent debt
+on the lending protocol’s balance sheet. These insolvent loan positions
+are backed by collateral assets that are worth too little to cover the
+outstanding tokens lent out to borrowers. Ultimately this shortfall must
+be covered by the protocol itself or by its users.</p>
+<p>In practice, most liquidators are bots programmed to periodically
+check for profitable liquidation opportunities. When they find one they
+take out a flashloan,<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a> borrowing the borrowed token,
+liquidating the lending position, swapping back to the borrowed token on
+a decentralized exchange (DEX), and then repaying the flashloan. The
+liquidator’s profit is the value of the liquidation bonus minus all
+costs (gas fees, DEX swap fees, flashloan fee).</p>
+<p>DEX liquidity is a crucial element in the liquidation process.
+Liquidators cannot rely on centralized exchange (CEX) liquidity because
+it cannot be incorporated into an atomic transaction.<a href="#fn2"
+class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If
+there’s any delay in swapping tokens, the liquidation cannot be financed
+via flashloan. Liquidations without flashloans would require liquidator
+bots to hold enough tokens to liquidate positions themselves, and
+carrying a large enough balance for the largest and most profitable
+liquidations would impose high capital costs and risk.</p>
+<p>Despite DEX liquidity being so crucial, current lending protocols
+cannot rely on it to exist when they need it. Liquidity providers can
+withdraw the tokens necessary to liquidate all outstanding loans, and
+the lending protocol has no smart-contract-enforced claim to those
+funds.</p>
+<p>Until now. With the advent of Uniswap v4 <span class="citation"
+data-cites="adams2023"></span> and its “hooks,” there is an opportunity
+to directly intervene in the contract execution process at specific
+junctures, paving the way for more dynamic solutions to the liquidation
+challenge.</p>
+<p>In this backdrop, we introduce the Solvent Lending protocol, a DeFi lending
+protocol that employs Uniswap v4 hooks. We introduce the Interest
+Accruing Stop Loss Order (IASLO), a new hook type designed to guarantee
+liquidations happen when relative token prices cross specific
+thresholds.</p>
+<h2 data-number="1.1" id="how-uniswap-v4-works"><span
+class="header-section-number">1.1</span> How Uniswap v4 works</h2>
+<p>A quick background on Uniswap is required to understand the Solvent
+Protocol. Uniswap is a DEX that allows users to swap different crypto
+tokens according to the constant product formula, <span
+class="math display"><em>x</em> × <em>y</em> = <em>k</em></span> where
+<span class="math inline"><em>x</em></span> is the value of one token,
+<span class="math inline"><em>y</em></span> is the value of the other
+token, and <span class="math inline"><em>k</em></span> is a constant.
+This means, for example, that if there are 10 times as many of token A
+as there are of token B, then the price of B must be ten times A.</p>
+<p>Users supply both tokens to the pool as liquidity, and the pool
+contract accepts any incoming trade that pays the required price plus a
+small fee. The fee rate differs between pools, but it’s most commonly
+set to 0.3% of the trade value.</p>
+<p>Uniswap v2 simply placed all liquidity into one big pool, evenly
+spreading it between 0 and infinity. The innovation introduced in
+Uniswap v3 was to allow users to concentrate their liquidity within
+specific price ranges. This greatly improved the capital efficiency of
+the exchange by concentrating liquidity where it was needed. For
+instance, in pools for swapping two USD-pegged stablecoins, liquidity
+concentrated between 0.99 and 1.01 is more useful, and accrues more
+fees, than liquidity anywhere else in the range between 0 and infinity.
+To allow for this, Uniswap v3 sliced up the price range from zero to
+infinity into “ticks” of uniform size. Liquidity providers can specify a
+range of ticks to add tokens to, with the tokens in a tick offering
+concentrated liquidity within the tick’s narrow price range.</p>
+<p>The most significant change from Uniswap v3 to Uniswap v4 is the
+addition of “hooks” which are calls to external smart contracts that
+happen before or after users take specific actions: initializing a pool,
+modifying a liquidity position, swapping tokens, or donating tokens.
+These hooks are necessary for Solvent Lending to function.</p>
+<h1 data-number="2" id="the-solvent-protocol-an-overview"><span
+class="header-section-number">2</span> Solvent Lending: An
+Overview</h1>
+<p>Solvent Lending has two parts: IASLOs implemented as Uniswap v4
+hooks, and the lending protocol itself, which relies on the IASLOs for
+liquidations.</p>
+<h2 data-number="2.1"
+id="interest-accruing-stop-loss-orders-iaslos"><span
+class="header-section-number">2.1</span> Interest Accruing Stop-Loss
+Orders (IASLOs)</h2>
+<p>A stop-loss order is an order to sell an asset when its price falls
+to a certain value. It is the mirror image of a limit order, an order to
+buy (sell) an asset when it falls below (rises above) some price. But
+while stop losses and limit orders are superficially similar, there are
+important differences that make stop losses more difficult to
+implement.</p>
+<p>Limit orders buy when traders are selling and sell when traders are
+buying. The trades that move prices to the limit price can also be used
+to fill the orders. They provide additional liquidity for the traders
+willing to take the other side of the order.</p>
+<p>Stop losses sell when traders are selling and buy when traders are
+buying. This means that they compete with traders for liquidity. This
+imposes a constraint on stop losses: the liquidity pool must have
+sufficient liquidity to fill all stop-loss orders alongside the trades
+that trigger them. This means that some liquidity must be locked up to
+fulfill stop-loss orders. This lockup is an implicit cost on liquidity
+providers, who must be compensated with interest payments.</p>
+<p>An IASLO is a stop-loss order that accrues interest to be paid to
+liquidity providers (and possibly other parties). As it accrues
+interest, its debt increases while its collateral balance remains
+constant, causing it to slide along the price curve into different price
+ticks. Every tick must always have enough liquidity to fill all
+stop-loss orders in the tick’s price range, and these orders must be
+automatically triggered by any swap that moves the price past the
+stop-loss order’s current price.</p>
+<p>One thing worth noting is that IASLOs have utility outside of the
+context of Solvent Lending, and nothing prevents any user or
+protocol from using them once deployed. The simplest use case is for
+traders to prevent excessive losses on their assets.</p>
+<h3 data-number="2.1.1" id="the-iaslo-smart-contract"><span
+class="header-section-number">2.1.1</span> The IASLO Smart Contract</h3>
+<p>The IASLO smart contract features a ledger with all outstanding
+stop-loss orders, and their associated ticks and interest rates. It
+features the following functions.</p>
+<ol>
+<li><p><code>open_new_stop_loss()</code> allows the user to open a new
+stop-loss order if there is sufficient liquidity in the relevant price
+tick.</p></li>
+<li><p><code>change_external_interest()</code> allows the user to change
+the additional interest accrued by the position. IASLOs pay interest to
+liquidity providers, and they can optionally pay additional interest to
+a third party (e.g. a lending pool).</p></li>
+<li><p><code>close_stop_loss()</code> allows the user to repay the
+outstanding interest on an open stop-loss order and close the order or
+collect the exchanged tokens if the stop loss has been
+executed.</p></li>
+<li><p><code>repay_interest()</code> allows the user to repay all or a
+portion of interest without closing the order.</p></li>
+<li><p><code>realize_interest()</code> moves an order to a new price
+tick if sufficient interest has accrued and the new tick has sufficient
+liquidity.</p></li>
+<li><p><code>disburse_interest()</code> calls the <code>donate()</code>
+function of the Uniswap v4 pool to pay accrued interest owed to
+liquidity providers.</p></li>
+</ol>
+<p>The IASLO contract’s base interest rate is a variable rate based on
+the ratio of stop-loss orders in a tick and the amount of liquidity in
+that tick. If a high fraction of total liquidity is tied up in stop loss
+orders, the interest rate may be very high, encouraging users to add
+additional liquidity to cover all orders and allow other users to make
+withdrawals.</p>
+<p>When initializing an IASLO-enabled liquidity pool, it must be
+connected to the IASLO smart contract via two hooks:</p>
+<ol>
+<li><p>Before a swap transaction is executed, a hook calls the IASLO
+smart contract. This hook checks if the swap has moved the price through
+one or more new price ticks. If there are stop-loss orders associated
+with those ticks, they are added to the swap and executed as a batch
+alongside it.</p></li>
+<li><p>Before a user modifies their liquidity position, a hook calls the
+IASLO smart contract and checks if this change would reduce liquidity
+below the amount needed to fulfil all stop loss orders in all
+ticks.</p></li>
+</ol>
+<h1 data-number="3" id="solvent-protocol-technical-specifications"><span
+class="header-section-number">3</span> Solvent Lending Technical
+Specifications</h1>
+<p>Solvent Lending allows users to deposit tokens as collateral and
+borrow other tokens, deposited by other users, against them. It features
+the following functions.</p>
+<ol>
+<li><p><code>add_token_pair()</code> creates a new lending pool linked
+to an IASLO-enabled Uniswap v4 pool. When creating the pair, the user
+sets fixed parameters, such as the interest rate curve.</p></li>
+<li><p><code>deposit()</code> allows users to deposit ERC-20 tokens as
+collateral into specific token pairs. Depositors earn interest on their
+tokens when they are borrowed.</p></li>
+<li><p><code>withdraw()</code> enables depositors to withdraw their
+tokens. This function checks if there is sufficient liquidity in the
+protocol to fulfill the withdrawal without affecting outstanding loans.
+If not, the request will be queued until liquidity is
+available.</p></li>
+<li><p><code>borrow()</code> lets users open a borrow position with
+their collateral tokens. The collateral is deposited into an IASLO at
+the price ratio that would make its value equal to that of the borrowed
+tokens.</p></li>
+<li><p><code>repay_loan()</code> allows borrowers to repay their
+borrowed amount plus any accumulated interest. Repayments can be partial
+or full.</p></li>
+<li><p><code>liquidate_borrow()</code> resolves a liquidation after it
+has been triggered by the IASLO contract, marking the position as
+closed.</p></li>
+<li><p><code>collect_interest()</code> takes any interest accrued from
+borrowers and distributes it to token depositors, rewarding them for
+providing liquidity.</p></li>
+<li><p><code>update_interest_rate()</code> adjusts the interest rate of
+a token pair and passes it to the IASLO contract. The interest rate is
+an increasing function of the ratio of tokens available to lend and
+tokens borrowed.</p></li>
+<li><p><code>update_protocol_fee()</code> adjusts the fraction of
+interest accruing to the protocol. This action can only be performed by
+the protocol owner. The default fee rate is 0%.</p></li>
+<li><p><code>set_protocol_fee_recipient()</code> changes the address
+protocol fees are sent to. This action can only be performed by the
+protocol owner.</p></li>
+<li><p><code>collect_protocol_fees()</code> sends accumulated protocol
+fees for a specific pool to the protocol fee recipient.</p></li>
+</ol>
+<p>The interest rate curve is an increasing function of the ratio of
+tokens available to lend and tokens borrowed. In contrast to other
+lending protocols, tokens used as collateral cannot be lent out, as they
+are locked into the IASLO contract. Tokens being used as collateral do
+not accrue interest.</p>
+<h1 data-number="4" id="use-case-scenarios"><span
+class="header-section-number">4</span> Use Case Scenarios</h1>
+<h2 data-number="4.1"
+id="detailed-walkthrough-of-a-typical-borrower"><span
+class="header-section-number">4.1</span> Detailed Walkthrough of a
+Typical Borrower</h2>
+<p>Alice wants to borrow USDC using ETH as collateral.</p>
+<h4 data-number="4.1.0.1" id="initialization"><span
+class="header-section-number">4.1.0.1</span> Initialization</h4>
+<p>Alice first chooses a token pair, in this case, ETH-USDC. The pair is
+associated with an IASLO-enabled Uniswap v4 pool.</p>
+<h4 data-number="4.1.0.2" id="deposit"><span
+class="header-section-number">4.1.0.2</span> Deposit</h4>
+<p>Alice deposits 10 ETH using the <code>deposit()</code> function. This
+ETH will serve as her collateral.</p>
+<h4 data-number="4.1.0.3" id="borrowing"><span
+class="header-section-number">4.1.0.3</span> Borrowing</h4>
+<p>After depositing her ETH, Alice uses the <code>borrow()</code>
+function to take out a loan of USDC. There is effectively no limit on
+how leveraged Alice can get. In the extreme case, she can borrow almost
+the total value of her ETH in USDC, with her liquidation price one tick
+below the current price tick. Alice chooses a leverage position based on
+her personal risk appetite.</p>
+<h4 data-number="4.1.0.4" id="interest-accumulation"><span
+class="header-section-number">4.1.0.4</span> Interest Accumulation</h4>
+<p>As time progresses, the interest on the borrowed USDC accumulates.
+Some of the interest accrues to liquidity providers in the Uniswap v4
+pool via the IASLO smart contract. The other portion of interest accrues
+to users who provide the USDC tokens in a Solvent Lending
+pool. This interest rate adjusts dynamically based on the demand for
+borrowing, and the available supply of USDC in the pool, periodically
+passed to the IASLO contract by the <code>update_interest_rate()</code>
+function. Sometimes, enough interest accrues that Alice’s position needs
+to move up a tick. When any user calls the
+<code>realize_interest()</code> function, Alice’s borrow position is
+moved to the new tick if the new tick has sufficient liquidity to fill
+the stop loss order.<a href="#fn3" class="footnote-ref" id="fnref3"
+role="doc-noteref"><sup>3</sup></a></p>
+<h4 data-number="4.1.0.5" id="repayment"><span
+class="header-section-number">4.1.0.5</span> Repayment</h4>
+<p>After some time, Alice decides to repay her loan. She returns the
+USDC she borrowed plus the accumulated interest using the
+<code>repay_loan()</code> function.</p>
+<h4 data-number="4.1.0.6" id="withdrawal"><span
+class="header-section-number">4.1.0.6</span> Withdrawal</h4>
+<p>After repaying her loan, Alice can use the <code>withdraw()</code>
+function to reclaim her 10 ETH, or she might leave it in the pool to
+accumulate interest when borrowed by other users.</p>
+<h2 data-number="4.2"
+id="analysis-of-a-worst-case-scenario-collateral-token-exploit"><span
+class="header-section-number">4.2</span> Analysis of a Worst-Case
+Scenario: Collateral Token Exploit</h2>
+<p>Imagine a token called VUL (Vulnerable Token) with an unknown
+vulnerability.</p>
+<h4 data-number="4.2.0.1" id="deposit-and-borrow"><span
+class="header-section-number">4.2.0.1</span> Deposit and Borrow</h4>
+<p>Alice deposits ETH in the Sovlent Protocol ETH/VUL pool. Bob deposits
+a significant amount of VUL and borrows ETH.</p>
+<h4 data-number="4.2.0.2" id="exploit"><span
+class="header-section-number">4.2.0.2</span> Exploit</h4>
+<p>Chris, a hacker, discovers a way to mint unlimited VUL tokens. He
+sets up a series of transactions to extract the maximum possible value
+from this exploit. VUL’s price starts plummeting rapidly as Chris drains
+all available liquidity. Chris sells as much VUL as possible in the
+Uniswap v4 VUL/ETH pool. Chris’s sale moves the VUL/ETH price through
+the tick where Bob’s VUL becomes liquidatable.</p>
+<h4 data-number="4.2.0.3" id="iaslo-trigger"><span
+class="header-section-number">4.2.0.3</span> IASLO Trigger</h4>
+<p>Chris’s transaction in Uniswap v4 triggers the hook that calls the
+IASLO contract. Since the price is passing through Bob’s liquidation
+price tick, a VUL <span class="math inline">→</span> ETH swap is added
+to Chris’s transaction for the amount of ETH Bob owes. These ETH tokens
+are set aside to be collected by the Solvent Lending contract.</p>
+<h4 data-number="4.2.0.4" id="liquidation"><span
+class="header-section-number">4.2.0.4</span> Liquidation</h4>
+<p>Any user can call Solvent Lending’s <code>liquidate_borrow()</code>
+function on Bob’s borrow position. This returns the liquidated ETH to
+the pool and marks Bob’s position as closed. Alice can withdraw the ETH
+she contributed to the pool plus interest since Bob’s position was
+safely liquidated.</p>
+<h4 data-number="4.2.0.5" id="outcome"><span
+class="header-section-number">4.2.0.5</span> Outcome</h4>
+<p>In traditional DeFi platforms, there’s a range of prices between the
+price that makes a borrow position liquidatable and the price that makes
+it insolvent and unable to be liquidated profitably. The price must stay
+in this range long enough for liquidators to repay the loans. If prices
+fall through this range very quickly, as they do in the case of an
+exploit, it may not be possible for liquidators to liquidate all debt
+positions, leaving the protocol with insolvent debts. With Solvent
+Protocol’s integration of IASLO, the system is able to liquidate all
+borrow positions in the same transactions that cause prices to fall,
+ensuring the protocol remains solvent.</p>
+<h1 data-number="5"
+id="comparative-analysis-of-solvent-protocol-vs-existing-lending-protocols"><span
+class="header-section-number">5</span> Comparative Analysis of Solvent
+Lending vs Existing Lending Protocols</h1>
+<p>Solvent Lending works in a substantially different way from existing
+protocols, so it has both advantages and disadvantages.</p>
+<h4 data-number="5.0.0.1" id="permissionless-and-self-serve"><span
+class="header-section-number">5.0.0.1</span> Permissionless and
+Self-Serve</h4>
+<p>As we saw in the exploited token example above, Solvent Lending does
+not take losses when a bad token is added as collateral. Because of
+this, any token pair can be added to the protocol by a user without the
+need for permission or a governance vote. A token can be launched and
+have an on-chain lending market on the same day.</p>
+<h4 data-number="5.0.0.2" id="collateral-factor-of-100"><span
+class="header-section-number">5.0.0.2</span> Collateral Factor of
+100%</h4>
+<p>Solvent Lending allows users to borrow such that they would be
+liquidated at any price tick below the current one, so long as there
+exists sufficient liquidity in the tick to liquidate all positions.
+Existing lending protocols must limit borrowing to a fraction of
+collateral value to give liquidators a window of prices in which to
+liquidate. Solvent Lending's IASLO-based liquidation mechanism does
+not require this.</p>
+<h4 data-number="5.0.0.3" id="governance-free"><span
+class="header-section-number">5.0.0.3</span> Governance Free</h4>
+<p>The IASLO and Solvent Lending contracts are non-upgradeable. All the
+parameters for a lending pool are set when it is initialized and cannot
+be changed.</p>
+<h4 data-number="5.0.0.4" id="oracle-free"><span
+class="header-section-number">5.0.0.4</span> Oracle Free</h4>
+<p>Solvent Lending relies only on the token balances of the
+underlying IASLO-enabled Uniswap v4 pools for liquidations. It does not
+require any price oracles, on-chain or off-chain.</p>
+<h4 data-number="5.0.0.5" id="no-liquidator-fees"><span
+class="header-section-number">5.0.0.5</span> No Liquidator Fees</h4>
+<p>Solvent Lending uses IASLO hooks to automatically liquidate debt
+positions when trades cause prices to move. Traders have a natural
+incentive to arbitrage away price differences between different
+exchanges, so they don’t need an additional bonus to incentivize them to
+make trades that trigger liquidations.<a href="#fn4"
+class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<h4 data-number="5.0.0.6" id="no-lending-of-collateral"><span
+class="header-section-number">5.0.0.6</span> No Lending of
+Collateral</h4>
+<p>In existing protocols, a user’s collateral tokens go into a big pool
+and a fraction of them are lent out to other users. IASLOs require the
+collateral tokens to be locked in the IASLO contract, so they cannot
+contribute to the pool of loanable tokens. A user who wants to earn
+interest on his tokens in Solvent Lending cannot simultaneously use
+them as collateral.</p>
+<h4 data-number="5.0.0.7"
+id="one-collateral-token-one-borrowed-token"><span
+class="header-section-number">5.0.0.7</span> One Collateral Token, One
+Borrowed Token</h4>
+<p>In existing protocols, a user can use one or more collateral tokens
+to borrow one or more other tokens. Solvent Lending only allows for
+one-to-one borrowing. A user may have many borrow positions, but each
+one has a separate liquidation price associated with a specific Uniswap
+v4 pool.</p>
+<h1 data-number="6" id="conclusion"><span
+class="header-section-number">6</span> Conclusion</h1>
+<p>The project of DeFi is to create robust and decentralized systems
+allowing anyone access to finance without permission or gatekeepers. But
+while users can trade tokens permissionlessly, the current generation of
+lending protocols are simply too risky to allow permissionless lending
+and borrowing. They require active risk management to avoid catastrophic
+losses.</p>
+<p>Solvent Lending is the first permissionless lending market for
+DeFi. It achieves this by having a liquidation mechanism that is robust
+to any price change of the underlying tokens. It has no external
+dependencies: no governance, no price oracles. Once deployed on-chain,
+it can conceivably function for as long as the underlying chain
+continues to operate. This is not just a step, but a leap forward for
+DeFi, presenting a paradigm where trust is in the code and resilience is
+inherent. Solvent Lending epitomizes the true spirit of DeFi,
+marrying security with absolute decentralization. The future of lending
+in DeFi might just be solvent by default.</p>
+<aside id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>A flashloan is a special type of uncollateralized loan
+that is only possible in DeFi. A user can take out a loan of any size so
+long as they pay back the loan plus a fee by the end of the transaction.
+If the user does not pay off the loan, the entire transaction simply
+fails, and the loan never occurs.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The two types of crypto exchanges are DEXs and CEXs. A
+DEX is a set of smart contracts that allow users to trade entirely
+on-chain. Users supply tokens to DEX pools and other users trade against
+these pools, paying trading fees to the liquidity providers. CEXs are
+run by centralized entities that effectively function as crypto banks.
+The CEX keeps a database of user balances, and all trades within the CEX
+happen off-chain in that database.<a href="#fnref2"
+class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>In the rare case where Alice’s position is liquidated
+before interest can be realized, she pays the max possible interest in
+her current tick.<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In fact, adding a liquidator bonus would incentivize
+traders to manipulate prices to get the bonus. This would not be
+desirable!<a href="#fnref4" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside>
+<script>
+    // JavaScript to wrap h4 and p into a single div
+    document.addEventListener("DOMContentLoaded", function() {
+    const paraHeadings = document.querySelectorAll('h4');
+
+    paraHeadings.forEach(function(heading) {
+        const followingElement = heading.nextElementSibling;
+        if (followingElement.tagName === 'P') {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('inline-heading-paragraph');
+        
+        heading.parentNode.insertBefore(wrapper, heading);
+        wrapper.appendChild(heading);
+        wrapper.appendChild(followingElement);
+        }
+    });
+    });
+
+    // Version for this particular file
+    const thisVersion = "1.0.0";
+
+    // Fetch latest version from JSON
+    fetch('../../latest-version.json')
+        .then(response => response.json())
+        .then(data => {
+            const currentVersion = data.currentVersion;
+            // Check if this is an outdated version
+            if (thisVersion !== currentVersion) {
+                document.getElementById("update-banner").style.display = "block";
+                document.getElementById("new-version-link").href = `./${currentVersion}.html`;
+            }
+        });
+
+</script>
+</body>
+</html>
