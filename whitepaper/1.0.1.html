@@ -229,25 +229,25 @@ loans insolvent before they can be liquidated. The Solvent Lending protocol
 addresses this by using Interest Accruing Stop Loss Orders (IASLOs), a
 new type of hook on top of Uniswap v4 liquidity pools. This mechanism
 ensures that liquidations always happen when they are supposed to, even
-during significant market fluctuations. This whitepaper presents the
-Solvent Lending protocol’s design and compares its robustness to existing DeFi
+during significant market fluctuations. This whitepaper presents
+Solvent Lending’s design and compares its robustness to existing DeFi
 lending systems, highlighting its potential to enhance stability and
 decentralization in DeFi.</p>
 </div>
-<p>Whitepaper version: 1.0.0</p>
+<p id="whitepaper-version">Whitepaper version: </p>
 </header>
 <p>In the evolving DeFi ecosystem, decentralized finance has faced
 notable vulnerabilities. One important issue is loans becoming insolvent
 before liquidators can intervene, especially during sudden market
 shifts. This not only places lending protocols at risk but also
-diminishes trust in DeFi platforms. The Solvent Lending protocol proposes a
+diminishes trust in DeFi platforms. Solvent Lending proposes a
 novel solution. This paper introduces a new DeFi primitive, the Interest
 Accruing Stop Loss Order (IASLO), to be integrated with Uniswap v4
-liquidity pools as a set of hooks. Using these IASLOs, Solvent Lending ensures timely liquidations regardless of market conditions.
-This whitepaper details the design of the Solvent Lending protocol, contrasting
-its strengths against existing DeFi lending methods, and underscores its
-potential to bolster stability, security, and decentralization in
-DeFi.</p>
+liquidity pools as a set of hooks. Using these IASLOs, Solvent Lending ensures
+timely liquidations regardless of market conditions. This whitepaper details
+the design of Solvent Lending, contrasting its strengths against
+existing DeFi lending methods, and underscores its potential to bolster
+stability, security, and decentralization in DeFi.</p>
 <h1 data-number="1" id="background"><span
 class="header-section-number">1</span> Background</h1>
 <p>DeFi lending protocols allow users to collateralize ERC-20 tokens,
@@ -292,15 +292,15 @@ data-cites="adams2023"></span> and its “hooks,” there is an opportunity
 to directly intervene in the contract execution process at specific
 junctures, paving the way for more dynamic solutions to the liquidation
 challenge.</p>
-<p>In this backdrop, we introduce the Solvent Lending protocol, a DeFi lending
+<p>In this backdrop, we introduce Solvent Lending, a DeFi lending
 protocol that employs Uniswap v4 hooks. We introduce the Interest
 Accruing Stop Loss Order (IASLO), a new hook type designed to guarantee
 liquidations happen when relative token prices cross specific
 thresholds.</p>
 <h2 data-number="1.1" id="how-uniswap-v4-works"><span
 class="header-section-number">1.1</span> How Uniswap v4 works</h2>
-<p>A quick background on Uniswap is required to understand the Solvent
-Protocol. Uniswap is a DEX that allows users to swap different crypto
+<p>A quick background on Uniswap is required to understand Solvent
+Lending. Uniswap is a DEX that allows users to swap different crypto
 tokens according to the constant product formula, <span
 class="math display"><em>x</em> × <em>y</em> = <em>k</em></span> where
 <span class="math inline"><em>x</em></span> is the value of one token,
@@ -329,7 +329,7 @@ addition of “hooks” which are calls to external smart contracts that
 happen before or after users take specific actions: initializing a pool,
 modifying a liquidity position, swapping tokens, or donating tokens.
 These hooks are necessary for Solvent Lending to function.</p>
-<h1 data-number="2" id="the-solvent-protocol-an-overview"><span
+<h1 data-number="2" id="solvent-lending-an-overview"><span
 class="header-section-number">2</span> Solvent Lending: An
 Overview</h1>
 <p>Solvent Lending has two parts: IASLOs implemented as Uniswap v4
@@ -366,7 +366,7 @@ automatically triggered by any swap that moves the price past the
 stop-loss order’s current price.</p>
 <p>One thing worth noting is that IASLOs have utility outside of the
 context of Solvent Lending, and nothing prevents any user or
-protocol from using them once deployed. The simplest use case is for
+smart contract from using them once deployed. The simplest use case is for
 traders to prevent excessive losses on their assets.</p>
 <h3 data-number="2.1.1" id="the-iaslo-smart-contract"><span
 class="header-section-number">2.1.1</span> The IASLO Smart Contract</h3>
@@ -413,7 +413,7 @@ IASLO smart contract and checks if this change would reduce liquidity
 below the amount needed to fulfil all stop loss orders in all
 ticks.</p></li>
 </ol>
-<h1 data-number="3" id="solvent-protocol-technical-specifications"><span
+<h1 data-number="3" id="solvent-lending-technical-specifications"><span
 class="header-section-number">3</span> Solvent Lending Technical
 Specifications</h1>
 <p>Solvent Lending allows users to deposit tokens as collateral and
@@ -551,11 +551,11 @@ in this range long enough for liquidators to repay the loans. If prices
 fall through this range very quickly, as they do in the case of an
 exploit, it may not be possible for liquidators to liquidate all debt
 positions, leaving the protocol with insolvent debts. With Solvent
-Protocol’s integration of IASLO, the system is able to liquidate all
+Lending’s integration of IASLO, the system is able to liquidate all
 borrow positions in the same transactions that cause prices to fall,
 ensuring the protocol remains solvent.</p>
 <h1 data-number="5"
-id="comparative-analysis-of-solvent-protocol-vs-existing-lending-protocols"><span
+id="comparative-analysis-of-solvent-lending-vs-existing-lending-protocols"><span
 class="header-section-number">5</span> Comparative Analysis of Solvent
 Lending vs Existing Lending Protocols</h1>
 <p>Solvent Lending works in a substantially different way from existing
@@ -678,8 +678,15 @@ role="doc-backlink">↩︎</a></p></li>
     });
     });
 
-    // Version for this particular file
-    const thisVersion = "1.0.0";
+    // Extract the file name from the window location
+    let url = window.location.pathname;
+    let fileName = url.substring(url.lastIndexOf('/') + 1);
+
+    // Remove the ".html" extension to get the version number
+    let thisVersion = fileName.replace(".html", "");
+
+    // Update the displayed version
+    document.getElementById('whitepaper-version').innerText += thisVersion;
 
     // Fetch latest version from JSON
     fetch('../../latest-version.json')
