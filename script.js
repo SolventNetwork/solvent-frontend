@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Execute the special function if provided
             specialFunc?.(svgDoc);
 
-            const intervalTime = 1500 / textToType.length;
+            const intervalTime = 1000 / textToType.length;
             await typeText(objId, textToType, intervalTime);
         }, delay);
     };
@@ -59,11 +59,11 @@ document.addEventListener("DOMContentLoaded", function() {
     .catch(error => console.error("Could not fetch latest whitepaper version:", error));
 
     // Delays
-    let delayDiscord = 1000;
-    let delayMail = delayDiscord + 1500;
-    let delayGithub = delayMail + 1500;
-    let delayX = delayGithub + 1500;
-    let delayWhitepaper = delayX + 1500;
+    let delayDiscord = 500;
+    let delayMail = delayDiscord + 1000;
+    let delayGithub = delayMail + 1000;
+    let delayX = delayGithub + 1000;
+    let delayWhitepaper = delayX + 1000;
 
     // Setup links
     setupAnimatedLink('discord-logo', "Join our Discord server", delayDiscord);
