@@ -1,10 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
-    <a href="mailto:garrett@solvent.network?subject=I want to help!">
-        <!-- Envelope Unicode -->
-        <text x="20" y="70" fill="#4AF626" style="font-family: Arial; font-size: 100px;">&#9993;</text>
-        
-        <!-- Animated Text -->
-        <text id="typedText" x="100" y="50" fill="#4AF626" style="font-family:monospace;font-size:16px;"></text>
-        <rect id="cursor" x="100" y="30" width="8" height="20" fill="#4AF626" visibility="hidden"></rect>
-    </a>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="400" height="100" viewBox="0 0 400 100" xml:space="preserve">
+<desc>Created with Fabric.js 3.6.6</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 217 351)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 -130.39 -11.33)" style=""  >
+		<text xml:space="preserve" font-family="Arial" font-size="100" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-49.61" y="31.41" >✉</tspan></text>
+</g>
+		<g transform="matrix(1 0 0 1 -99 -5.01)" style=""  >
+		<text xml:space="preserve" font-family="monospace" font-size="16" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1; white-space: pre;" ></text>
+</g>
+		<g transform="matrix(1 0 0 1 -96 -10)"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1;"  x="-4" y="-10" rx="0" ry="0" width="8" height="20" />
+</g>
+</g>
+</g>
+<g transform="matrix(1 0 0 1 176 50)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 -130.39 -11.33)" style=""  >
+		<text xml:space="preserve" font-family="Arial" font-size="100" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-49.61" y="31.41" >✉</tspan></text>
+</g>
+		<g transform="matrix(1 0 0 1 -99 -5.01)" style=""  >
+		<text xml:space="preserve" font-family="monospace" font-size="16" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1; white-space: pre;" ></text>
+</g>
+		<g transform="matrix(1 0 0 1 -96 -10)"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(74,246,38); fill-rule: nonzero; opacity: 1;"  x="-4" y="-10" rx="0" ry="0" width="8" height="20" />
+</g>
+</g>
+</g>
 </svg>
