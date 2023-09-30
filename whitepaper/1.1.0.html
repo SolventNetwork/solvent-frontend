@@ -297,38 +297,39 @@ protocol that employs Uniswap v4 hooks. We introduce the Interest
 Accruing Stop Loss Order (IASLO), a new hook type designed to guarantee
 liquidations happen when relative token prices cross specific
 thresholds.</p>
-<h2 data-number="1.1" id="how-uniswap-v4-works"><span
-class="header-section-number">1.1</span> How Uniswap v4 works</h2>
-<p>A quick background on Uniswap is required to understand Solvent
-Lending. Uniswap is a DEX that allows users to swap different crypto
-tokens according to the constant product formula, <span
-class="math display"><em>x</em> × <em>y</em> = <em>k</em></span> where
+<h2 data-number="1.1" id="how-uniswap-v4-works">
+  <span class="header-section-number">1.1</span> How Uniswap v4 works
+</h2>
+<p>A quick background on Uniswap is essential to understand Solvent Lending.
+Uniswap is a DEX that allows users to swap different crypto tokens based on the
+constant product formula, <span class="math display">
+<em>x</em> × <em>y</em> = <em>k</em></span> where
 <span class="math inline"><em>x</em></span> is the value of one token,
-<span class="math inline"><em>y</em></span> is the value of the other
-token, and <span class="math inline"><em>k</em></span> is a constant.
-This means, for example, that if there are 10 times as many of token A
-as there are of token B, then the price of B must be ten times A.</p>
-<p>Users supply both tokens to the pool as liquidity, and the pool
-contract accepts any incoming trade that pays the required price plus a
-small fee. The fee rate differs between pools, but it’s most commonly
-set to 0.3% of the trade value.</p>
-<p>Uniswap v2 simply placed all liquidity into one big pool, evenly
-spreading it between 0 and infinity. The innovation introduced in
-Uniswap v3 was to allow users to concentrate their liquidity within
-specific price ranges. This greatly improved the capital efficiency of
-the exchange by concentrating liquidity where it was needed. For
-instance, in pools for swapping two USD-pegged stablecoins, liquidity
-concentrated between 0.99 and 1.01 is more useful, and accrues more
-fees, than liquidity anywhere else in the range between 0 and infinity.
-To allow for this, Uniswap v3 sliced up the price range from zero to
-infinity into “ticks” of uniform size. Liquidity providers can specify a
-range of ticks to add tokens to, with the tokens in a tick offering
-concentrated liquidity within the tick’s narrow price range.</p>
-<p>The most significant change from Uniswap v3 to Uniswap v4 is the
-addition of “hooks” which are calls to external smart contracts that
-happen before or after users take specific actions: initializing a pool,
-modifying a liquidity position, swapping tokens, or donating tokens.
-These hooks are necessary for Solvent Lending to function.</p>
+<span class="math inline"><em>y</em></span> is the value of the other token,
+and <span class="math inline"><em>k</em></span> is a constant. This means, for
+example, that if there are 10 times as many of token A as there are of token B,
+the price of B must be ten times A.</p>
+<p>Users supply liquidity to the pool by depositing both tokens, and the pool
+contract accepts any incoming trade that pays the required price plus a small
+fee. The fee rate varies between pools but is most commonly set to 0.3% of the
+trade value.</p>
+<p>Uniswap v2 used a single pool to manage all liquidity, spreading it across a
+continuous price range from 0 to infinity. Uniswap v3, however, introduced
+the concept of "ticks" to partition this price space into discrete segments,
+turning it into a piecewise linear function. Each tick represents a fixed
+price and serves as a bucket where liquidity can be concentrated. Liquidity
+providers can choose upper and lower ticks to specify the price boundaries of
+their position. The benefit of this mechanism is that it allows for improved
+capital efficiency, particularly when liquidity is concentrated around a
+specific price range. For example, in pools for swapping USD-pegged
+stablecoins, liquidity is often most useful when concentrated between ticks
+corresponding to prices from 0.99 to 1.01.</p>
+<p>The most significant advancement from Uniswap v3 to Uniswap v4 is the
+introduction of "hooks," which are calls to external smart contracts that are
+executed either before or after specific actions are taken by users. These
+actions include initializing a pool, modifying a liquidity position, swapping
+tokens, or donating tokens. These hooks are crucial for the functionality of
+Solvent Lending.</p>
 <h1 data-number="2" id="solvent-lending-an-overview"><span
 class="header-section-number">2</span> Solvent Lending: An
 Overview</h1>
@@ -357,13 +358,13 @@ that trigger them. This means that some liquidity must be locked up to
 fulfill stop-loss orders. This lockup is an implicit cost on liquidity
 providers, who must be compensated with interest payments.</p>
 <p>An IASLO is a stop-loss order that accrues interest to be paid to
-liquidity providers (and possibly other parties). As it accrues
-interest, its debt increases while its collateral balance remains
-constant, causing it to slide along the price curve into different price
-ticks. Every tick must always have enough liquidity to fill all
-stop-loss orders in the tick’s price range, and these orders must be
-automatically triggered by any swap that moves the price past the
-stop-loss order’s current price.</p>
+liquidity providers (and possibly other parties). The position accrues
+potential interest continuously. This interest can be realized, either by the
+user paying interest from a pool of tokens they have set aside or by the
+position moving to a higher price tick. Every tick must always have enough
+liquidity to fill all stop-loss orders at the tick’s price, and these orders
+must be automatically triggered by any swap that moves the price into the
+tick.</p>
 <p>One thing worth noting is that IASLOs have utility outside of the
 context of Solvent Lending, and nothing prevents any user or
 smart contract from using them once deployed. The simplest use case is for
@@ -376,7 +377,7 @@ features the following functions.</p>
 <ol>
 <li><p><code>open_new_stop_loss()</code> allows the user to open a new
 stop-loss order if there is sufficient liquidity in the relevant price
-tick.</p></li>
+ticks.</p></li>
 <li><p><code>change_external_interest()</code> allows the user to change
 the additional interest accrued by the position. IASLOs pay interest to
 liquidity providers, and they can optionally pay additional interest to
@@ -385,14 +386,21 @@ a third party (e.g. a lending pool).</p></li>
 outstanding interest on an open stop-loss order and close the order or
 collect the exchanged tokens if the stop loss has been
 executed.</p></li>
-<li><p><code>repay_interest()</code> allows the user to repay all or a
-portion of interest without closing the order.</p></li>
-<li><p><code>realize_interest()</code> moves an order to a new price
-tick if sufficient interest has accrued and the new tick has sufficient
-liquidity.</p></li>
+<li><p><code>deposit_to_interest_reserve()</code> allows the user to add tokens
+to an interest reserve vault. These tokens are used to pay interest as it
+accrues.</p></li>
+<li><p><code>withdraw_from_interest_reserve()</code> allows the user to remove
+tokens from an interest reserve vault.</p></li>
+<li><p><code>realize_interest()</code> initiates the payment of accrued
+interest using tokens from an interest reserve vault. If the vault is empty or
+contains insufficient funds, the function will move the stop-loss order to a
+higher price tick. Should the stop-loss order be executed at this new, higher
+price tick, any additional tokens that are purchased due to the higher price
+will be allocated to settle the interest owed by the position.</p></li>
 <li><p><code>disburse_interest()</code> calls the <code>donate()</code>
 function of the Uniswap v4 pool to pay accrued interest owed to
-liquidity providers.</p></li>
+liquidity providers. Pays out additional interest to the address specified by
+the user.</p></li>
 </ol>
 <p>The IASLO contract’s base interest rate is a variable rate based on
 the ratio of stop-loss orders in a tick and the amount of liquidity in
@@ -410,7 +418,7 @@ with those ticks, they are added to the swap and executed as a batch
 alongside it.</p></li>
 <li><p>Before a user modifies their liquidity position, a hook calls the
 IASLO smart contract and checks if this change would reduce liquidity
-below the amount needed to fulfil all stop loss orders in all
+below the amount needed to fulfil all stop loss orders in all affected
 ticks.</p></li>
 </ol>
 <h1 data-number="3" id="solvent-lending-technical-specifications"><span
@@ -484,7 +492,9 @@ function to take out a loan of USDC. There is effectively no limit on
 how leveraged Alice can get. In the extreme case, she can borrow almost
 the total value of her ETH in USDC, with her liquidation price one tick
 below the current price tick. Alice chooses a leverage position based on
-her personal risk appetite.</p>
+her personal risk appetite. In this transaction, Alice also deposits a small
+amount of USDC into her interest reserve vault to cover future interest
+payments. The minimum deposit required is determined by the pool parameters.</p>
 <h4 data-number="4.1.0.4" id="interest-accumulation"><span
 class="header-section-number">4.1.0.4</span> Interest Accumulation</h4>
 <p>As time progresses, the interest on the borrowed USDC accumulates.
@@ -494,9 +504,11 @@ to users who provide the USDC tokens in a Solvent Lending
 pool. This interest rate adjusts dynamically based on the demand for
 borrowing, and the available supply of USDC in the pool, periodically
 passed to the IASLO contract by the <code>update_interest_rate()</code>
-function. Sometimes, enough interest accrues that Alice’s position needs
-to move up a tick. When any user calls the
-<code>realize_interest()</code> function, Alice’s borrow position is
+function. If Alice keeps her position open for a long time, or if interest
+rates are particularly high, Alice’s interest owed may exceed the amount in her
+interest reserve vault. If this is the case, her position may need
+to move up one or more price ticks. When any user calls the
+<code>realize_interest()</code> function, Alice’s borrow position will be
 moved to the new tick if the new tick has sufficient liquidity to fill
 the stop loss order.<a href="#fn3" class="footnote-ref" id="fnref3"
 role="doc-noteref"><sup>3</sup></a></p>
@@ -651,8 +663,9 @@ The CEX keeps a database of user balances, and all trades within the CEX
 happen off-chain in that database.<a href="#fnref2"
 class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>In the rare case where Alice’s position is liquidated
-before interest can be realized, she pays the max possible interest in
-her current tick.<a href="#fnref3" class="footnote-back"
+before interest can be realized, she pays the max possible interest that can be
+paid out of her interest reserve vault, and the remaining interest owed is not
+paid.<a href="#fnref3" class="footnote-back"
 role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>In fact, adding a liquidator bonus would incentivize
 traders to manipulate prices to get the bonus. This would not be
