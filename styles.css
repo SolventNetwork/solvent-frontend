@@ -2,19 +2,72 @@ body, html {
     height: 100%;
     margin: 0;
     background-color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #4AF626;
+    font-family: monospace;
+    overflow-x: hidden;
 }
 
 .container {
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .logo {
-    /* adjust width as needed */
     width: 100px;
     height: auto;
+}
+
+.timeline-line {
+    position: absolute;
+    width: 2px;
+    background: #4AF626;
+    height: 550px;
+}
+
+.bubble {
+    width: 12px;
+    height: 12px;
+    background: #4AF626;
+    position: absolute;
+    border-radius: 50%;
+    left: calc(50% - 6px);
+}
+
+.timeline-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.timeline {
+    position: relative;
+    width: 80px;
+    height: 600px;
+    margin: auto; /* centers the timeline */
+}
+
+.timeline-text-left {
+    position: absolute;
+    color: #4AF626;
+    right: calc(50% + 60px);  /* Half of the screen width plus some padding */
+    text-align: right;
+    max-width: calc(60vw - 20px); /* Half of the screen width minus some padding */
+}
+
+
+.timeline-text-right {
+    position: absolute;
+    color: #4AF626;
+    left: 60px;
+    text-align: left;
+    max-width: calc(60vw - 60px); /* Half of the screen width minus some padding */
+}
+
+.timeline-branch {
+    position: absolute;
+    left: 20px;
 }
