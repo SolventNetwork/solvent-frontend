@@ -1,0 +1,169 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="100%" height="100%" rx="15" fill="black" />
+
+    <!-- Definitions for token colors -->
+    <defs>
+        <style>
+            .terminal { fill: #4AF626; font-family: monospace; font-size: 16px; } /* Terminal Green */
+            .terminal.small { font-size: 11px; } /* Additional class for smaller font size */
+            .token0 { fill: #00FFFF; } /* Neon Blue for Token 0 */
+            .token1 { fill: #FF00FF; } /* Bright Magenta for Token 1 */
+            .arrow {
+                fill: none;
+                stroke: #4AF626;
+                stroke-width: 2;
+                marker-end: url(#arrowhead);
+            }
+        </style>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                refX="0" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#4AF626"/>
+        </marker>
+    </defs>
+
+    <!-- Uniswap v4 Pool Rectangle -->
+    <rect x="100" y="300" width="150" height="200" rx="15" ry="15" fill="none" stroke="#4AF626" stroke-width="3"/>
+
+    <!-- IASLO Rectangle -->
+    <rect x="400" y="300" width="150" height="200" rx="15" ry="15" fill="none" stroke="#4AF626" stroke-width="3"/>
+    <!-- IASLO Swaps -->
+    <path d="M 260,385 L 370,385" class="arrow" />
+    <path d="M 390,415 L 280,415" class="arrow" />
+    <text x="260" y="435" class="terminal small">IASLO swaps with</text>
+    <text x="260" y="450" class="terminal small">Uniswap when price</text>
+    <text x="260" y="465" class="terminal small">changes tick</text>
+
+    <!-- Interest Reserve Box within IASLO -->
+    <rect x="475" y="310" width="65" height="65" rx="5" ry="5" fill="none" stroke="#4AF626" stroke-width="2"/>
+    <text x="480" y="325" class="terminal small">Interest</text>
+    <text x="480" y="336" class="terminal small">Reserve</text>
+    <!-- Interest Reserve Box Tokens -->
+    <rect x="480" y="348" width="25" height="8" class="token0"/>
+    <rect x="480" y="359" width="25" height="8" class="token1"/>
+    <!-- Interest payments -->
+    <path d="M 540,335 L 670,335" class="arrow" /> <!-- Interest to Solvent Lending -->
+    <path d="M 500,310 L 500,150 L 255,150" class="arrow" /> <!-- Interest to Uniswap LPs -->
+    <path d="M 515,310 L 515,150 L 695,150" class="arrow" /> <!-- Interest to Uniswap LPs -->
+
+    <!-- Solvent Lending Rectangle -->
+    <rect x="700" y="300" width="150" height="200" rx="15" ry="15" fill="none" stroke="#4AF626" stroke-width="3"/>
+
+    <!-- Text for First Rectangle -->
+    <text x="100" y="290" class="terminal">Uniswap v4 Pool</text>
+
+    <!-- Text for Second Rectangle -->
+    <text x="400" y="290" class="terminal">IASLO hook</text>
+
+    <!-- Text for Third Rectangle -->
+    <text x="700" y="290" class="terminal">Solvent Lending</text>
+
+    <!-- Lender Square Box -->
+    <rect x="725" y="100" width="100" height="100" rx="10" ry="10" fill="none" stroke="#4AF626" stroke-width="3"/>
+    <text x="735" y="90" class="terminal">Lender</text>
+    <!-- Arrows for Lenders depositing and withdrawing -->
+    <path d="M 760,210 L 760,250" class="arrow" />
+    <path d="M 780,270 L 780,230" class="arrow" />
+
+    <!-- Borrower Square Box -->
+    <rect x="725" y="600" width="100" height="100" rx="10" ry="10" fill="none" stroke="#4AF626" stroke-width="3"/>
+    <text x="730" y="590" class="terminal">Borrower</text>
+    <!-- Arrows for Borrowers depositing and withdrawing -->
+    <path d="M 790,510 L 790,550" class="arrow" /> <!-- Borrowed token -->
+    <path d="M 760,570 L 760,437.5 L465,437.5" class="arrow" /> <!-- Collateral -->
+    <path d="M 775,570 L 775,355 L560,355" class="arrow" /> <!-- Interest reserves -->
+    <!-- Explanatory text -->
+    <text x="560" y="455" class="terminal small">Collateral is</text>
+    <text x="560" y="470" class="terminal small">deposited in IASLO</text>
+    <text x="560" y="485" class="terminal small">at the liquidation</text>
+    <text x="560" y="500" class="terminal small">price tick</text>
+
+    <text x="560" y="375" class="terminal small">Borrower deposits</text>
+    <text x="560" y="390" class="terminal small">tokens for future</text>
+    <text x="560" y="405" class="terminal small">interest payments</text>
+
+    <text x="550" y="140" class="terminal small">Interest to lender</text>
+    <text x="260" y="140" class="terminal small">Interest to LPs in ticks with IASLOs</text>
+    <text x="560" y="325" class="terminal small">Interest to protocol</text>
+
+
+
+    <!-- Price Label -->
+    <text x="45" y="405" class="terminal">Price</text>
+
+    <!-- Dotted Price Line Across the Rectangles -->
+    <line x1="100" y1="400" x2="550" y2="400" stroke="#4AF626" stroke-width="2" stroke-dasharray="4"/>
+    <!-- Dotted Line connecting swaps to price -->
+    <path d="M150,545 L70,545 L70,410" stroke="#4AF626" fill="none" stroke-width="2" stroke-dasharray="4"/>
+
+    <!-- Token Bars in Uniswap v4 Pool Box -->
+    <!-- Token0 Bars (Above Price Line) -->
+    <rect x="110" y="315" width="45" height="5" class="token0"/>
+    <rect x="110" y="330" width="45" height="5" class="token0"/>
+    <rect x="110" y="345" width="65" height="5" class="token0"/>
+    <rect x="110" y="360" width="65" height="5" class="token0"/>
+    <rect x="110" y="375" width="65" height="5" class="token0"/>
+    <rect x="110" y="390" width="65" height="5" class="token0"/>
+    <!-- Token1 Bars (Below Price Line) -->
+    <rect x="110" y="405" width="65" height="5" class="token1"/>
+    <rect x="110" y="420" width="55" height="5" class="token1"/>
+    <rect x="110" y="435" width="55" height="5" class="token1"/>
+    <rect x="110" y="450" width="55" height="5" class="token1"/>
+    <rect x="110" y="465" width="30" height="5" class="token1"/>
+    <rect x="110" y="480" width="30" height="5" class="token1"/>
+
+    <!-- Token Bars in IASLO Box -->
+    <!-- Token1 Bars (Above Price Line, Smaller) -->
+    <rect x="410" y="315" width="5" height="5" class="token1"/>
+    <rect x="410" y="330" width="5" height="5" class="token1"/>
+    <rect x="410" y="345" width="20" height="5" class="token1"/>
+    <rect x="410" y="360" width="25" height="5" class="token1"/>
+    <rect x="410" y="375" width="25" height="5" class="token1"/>
+    <rect x="410" y="390" width="20" height="5" class="token1"/>
+    <!-- Token0 Bars (Below Price Line, Smaller) -->
+    <rect x="410" y="405" width="20" height="5" class="token0"/>
+    <rect x="410" y="420" width="20" height="5" class="token0"/>
+    <rect x="410" y="435" width="30" height="5" class="token0"/>
+    <rect x="410" y="450" width="20" height="5" class="token0"/>
+    <rect x="410" y="465" width="20" height="5" class="token0"/>
+    <rect x="410" y="480" width="15" height="5" class="token0"/>
+
+    <!-- Lender Box Tokens -->
+    <!-- Token0 Bar in Lender Box -->
+    <rect x="735" y="160" width="35" height="30" class="token0"/>
+    <!-- Token1 Bar in Lender Box -->
+    <rect x="780" y="145" width="35" height="45" class="token1"/>
+
+    <!-- Borrower Box Tokens -->
+    <!-- Token0 Bar in Borrower Box -->
+    <rect x="735" y="685" width="35" height="5" class="token0"/>
+    <!-- Token1 Bar in Borrower Box -->
+    <rect x="780" y="620" width="35" height="70" class="token1"/>
+
+    <!-- Solvent Lending Box Tokens -->
+    <!-- Token0 Bar in Solvent Lending Box -->
+    <rect x="790" y="320" width="50" height="70" class="token0"/>
+    <!-- Token1 Bar in Solvent Lending Box -->
+    <rect x="810" y="410" width="30" height="70" class="token1"/>
+
+    <rect x="125" y="100" width="100" height="100" rx="10" ry="10" fill="none" stroke="#4AF626" stroke-width="3"/>
+    <!-- Liquidity Provider Text (Wrapped) -->
+    <text x="135" y="75" class="terminal">Liquidity</text>
+    <text x="135" y="90" class="terminal">Provider</text>
+    <!-- Liquidity Provider Box Tokens -->
+    <rect x="135" y="160" width="35" height="30" class="token0"/>
+    <rect x="180" y="145" width="35" height="45" class="token1"/>
+    <!-- Arrows for Liquidity Providers depositing to Uniswap -->
+    <path d="M 160,210 L 160,250" class="arrow" />
+    <path d="M 180,270 L 180,230" class="arrow" />
+
+    <!-- Swapper Box -->
+    <rect x="125" y="600" width="100" height="100" rx="10" ry="10" fill="none" stroke="#4AF626" stroke-width="3"/>
+    <text x="135" y="590" class="terminal">Swapper</text>
+    <!-- Swapper Box Tokens -->
+    <rect x="135" y="650" width="35" height="40" class="token0"/>
+    <rect x="180" y="660" width="35" height="30" class="token1"/>
+    <!-- Arrows for Swappers trading with Uniswap -->
+    <path d="M 160,570 L 160,530" class="arrow" />
+    <path d="M 180,510 L 180,550" class="arrow" />
+</svg>
