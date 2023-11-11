@@ -89,3 +89,15 @@ a {
     position: absolute;
     left: 20px;
 }
+
+.svg-container {
+    width: 100%; /* Full width of the container */
+    max-width: 1000px; /* Maximum width */
+    margin: auto; /* Centering if smaller than the max-width */
+}
+
+.svg-container object {
+    width: 100%;
+    height: auto;
+    display: block;
+}
